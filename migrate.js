@@ -9,8 +9,11 @@ try {
     console.error('Unable to connect to the database:', err);
 }
 
-const VideoSql = sequelize.define('wp_hdflvvideoshare',videoSqlScheme)
-const video2category = sequelize.define('wp_hdflvvideoshare_med2play',)
+const SQL_video = sequelize.define('wp_hdflvvideoshare',videoSqlScheme)
+const SQL_video2category = sequelize.define('wp_hdflvvideoshare_med2play',)
+const SQL_category = sequelize.define('wp_hdflvvideoshare_playlist',);
+const SQL_tags = sequelize.define('wp_hdflvvideoshare_tags',);
+
 
 
 sequelize.close()

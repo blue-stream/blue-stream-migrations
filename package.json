@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/blue-stream/blue-stream-migrations#readme",
   "dependencies": {
+    "mongoose": "^5.4.20",
     "mysql2": "^1.6.5",
     "sequelize": "^5.2.0"
   }

@@ -38,10 +38,10 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     const MONGO = { Video, Channel };
 
     console.log('Start migrate channels...');
-    await migrateChannel(SQL, MONGO);
+    const playlistToChannelMap = await migrateChannel(SQL, MONGO);
 
     console.log('Start migrate videos...');
-    await migrateVideo(SQL, MONGO);
+    await migrateVideo(SQL, MONGO, playlistToChannelMap);
 
     await sequelize.close();
     console.log('[SQL] connection closed');

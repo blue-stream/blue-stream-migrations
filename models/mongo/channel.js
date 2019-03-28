@@ -32,6 +32,6 @@ const channelSchema = new mongoose.Schema(
         },
     });
 
-channelSchema.index({ name: 1, user: -1 });
+// channelSchema.index({ name: 1, user: -1 });
 
 export const ChannelModel = mongoose.model('Channel', channelSchema);

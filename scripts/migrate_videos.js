@@ -1,5 +1,5 @@
-import { VideoModel } from './models/mongo/video';
+const VideoModel = require('./models/mongo/video');
 
-export const migrateVideos = (sequelize) => {
+module.exports = migrateVideos = (SQL) => {
 
 }

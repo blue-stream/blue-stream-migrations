@@ -1,5 +1,5 @@
-import { ChannelModel } from './models/mongo/channel';
+const ChannelModel = require('./models/mongo/channel');
 
-export const migrateChannel = (sequelize) => {
+module.exports = (SQL) => {
 
 }

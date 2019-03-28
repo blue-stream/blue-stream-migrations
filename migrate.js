@@ -1,44 +1,47 @@
-import { migrateChannel } from './scripts/migrate_channels';
-import { migrateVideo } from './scripts/migrate_videos';
-import * as mongoose from 'mongoose';
-import videoSqlScheme from './models/sql/video'
+const migrateChannel = require('./scripts/migrate_channels');
+const migrateVideo = require('./scripts/migrate_videos');
+const mongoose = require('mongoose');
+const videoSqlScheme = require('./models/sql/video');
 
 const MONGO_connectionURI = "mysql://user:pass@example.com:port/dbname";
 const SQL_connectionURI = "mysql://user:pass@example.com:port/dbname";
-
-await mongoose.connect(
-    MONGO_connectionURI,
-    { useNewUrlParser: true },
-);
-
-console.log('[MongoDB] connected');
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {
     define: {
         timestamps: false,
-
     }
 });
 
-try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-} catch(err) {
-    console.error('Unable to connect to the database:', err);
-}
+(async () => {
+    try {
+        await mongoose.connect(
+            MONGO_connectionURI,
+            { useNewUrlParser: true },
+        );
+    
+        console.log('[MongoDB] connected');
+        await sequelize.authenticate();
+        console.log('[SQL] connected');
+    } catch(err) {
+        console.error('Unable to connect to the database:', err);
+        throw err;
+    }
+    
+    const Video = sequelize.define('wp_hdflvvideoshare',videoSqlScheme)
+    const Video2category = sequelize.define('wp_hdflvvideoshare_med2play',)
+    const Category = sequelize.define('wp_hdflvvideoshare_playlist',);
+    const Tags = sequelize.define('wp_hdflvvideoshare_tags',);
 
-const SQL_video = sequelize.define('wp_hdflvvideoshare',videoSqlScheme)
-const SQL_video2category = sequelize.define('wp_hdflvvideoshare_med2play',)
-const SQL_category = sequelize.define('wp_hdflvvideoshare_playlist',);
-const SQL_tags = sequelize.define('wp_hdflvvideoshare_tags',);
-
-sequelize.sync();
-
-console.log('Start migrate channels...');
-migrateChannel(sequelize);
-
-console.log('Start migrate videos...');
-migrateVideo(sequelize);
-
-sequelize.close()
+    const SQL = {Video,Video2category,Tags,Category};
+    
+    sequelize.sync();
+    
+    console.log('Start migrate channels...');
+    await migrateChannel(SQL);
+    
+    console.log('Start migrate videos...');
+    await migrateVideo(SQL);
+    
+    sequelize.close()
+})();

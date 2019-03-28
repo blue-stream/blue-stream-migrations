@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 export const VideoStatus = {
     UPLOADED = 'UPLOADED',
@@ -72,4 +72,4 @@ const videoSchema = new mongoose.Schema(
         },
     });
 
-export const VideoModel = mongoose.model('Video', videoSchema);
+module.exports = mongoose.model('Video', videoSchema);

@@ -40,8 +40,6 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
     const SQL = { Video, Video2category, Tags, Category };
 
-    await sequelize.sync();
-
     const Video = require('./models/mongo/video');
     const Channel = require('./models/mongo/channel');
     const MONGO = { Video, Channel };

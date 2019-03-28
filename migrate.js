@@ -1,3 +1,6 @@
+import { migrateChannel } from './scripts/migrate_channels';
+import { migrateVideo } from './scripts/migrate_videos';
+
 import videoSqlScheme from './models/sql/video'
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
@@ -15,7 +18,9 @@ const SQL_category = sequelize.define('wp_hdflvvideoshare_playlist',);
 const SQL_tags = sequelize.define('wp_hdflvvideoshare_tags',);
 
 console.log('Start migrate channels...');
+migrateChannel(sequelize);
 
 console.log('Start migrate videos...');
+migrateVideo(sequelize);
 
 sequelize.close()

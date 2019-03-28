@@ -35,7 +35,7 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
     const SQL = {Video,Video2category,Tags,Category};
     
-    sequelize.sync();
+    await sequelize.sync();
 
     const Video = require('./models/mongo/video');
     const Channel = require('./models/mongo/channel');
@@ -47,5 +47,5 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     console.log('Start migrate videos...');
     await migrateVideo(SQL,MONGO);
     
-    sequelize.close()
+    await sequelize.close();
 })();

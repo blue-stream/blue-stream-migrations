@@ -26,15 +26,15 @@ const sequelize = new Sequelize(SQL_connectionURI, {
         throw err;
     }
 
-    const Video = await sequelize.define('wp_hdflvvideoshare', videoSqlScheme, { freezeTableName: true });
-    const Video2category = await sequelize.define('wp_hdflvvideoshare_med2play', video2categorySqlScheme, { freezeTableName: true });
-    const Category = await sequelize.define('wp_hdflvvideoshare_playlist', categorySqlScheme, { freezeTableName: true });
-    const Tags = await sequelize.define('wp_hdflvvideoshare_tags', tagSqlScheme, { freezeTableName: true });
+    let Video = await sequelize.define('wp_hdflvvideoshare', videoSqlScheme, { freezeTableName: true });
+    let Video2category = await sequelize.define('wp_hdflvvideoshare_med2play', video2categorySqlScheme, { freezeTableName: true });
+    let Category = await sequelize.define('wp_hdflvvideoshare_playlist', categorySqlScheme, { freezeTableName: true });
+    let Tags = await sequelize.define('wp_hdflvvideoshare_tags', tagSqlScheme, { freezeTableName: true });
 
     const SQL = { Video, Video2category, Tags, Category };
 
-    const Video = await require('./models/mongo/video')();
-    const Channel = await require('./models/mongo/channel')();
+    Video = await require('./models/mongo/video')();
+    Channel = await require('./models/mongo/channel')();
     const MONGO = { Video, Channel };
 
     console.log('Start migrate channels...');

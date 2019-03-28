@@ -1,10 +1,14 @@
 const migrateChannel = require('./scripts/migrate_channels');
 const migrateVideo = require('./scripts/migrate_videos');
 const mongoose = require('mongoose');
+
 const videoSqlScheme = require('./models/sql/video');
+const tagSqlScheme = require('./models/sql/tag');
+const categorySqlScheme = require('./models/sql/category');
+const video2categorySqlScheme = require('./models/sql/video2category');
 const config = require('./config')
 
-const SQL_connectionURI = config.sql;
+const SQL_connectionURI = config.sql.db;
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {
@@ -17,29 +21,28 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     try {
         await sequelize.authenticate();
         console.log('[SQL] connected');
-    } catch(err) {
+    } catch (err) {
         console.error('Unable to connect to the database:', err);
         throw err;
     }
-    
-    const Video = sequelize.define('wp_hdflvvideoshare',videoSqlScheme)
-    const Video2category = sequelize.define('wp_hdflvvideoshare_med2play',)
-    const Category = sequelize.define('wp_hdflvvideoshare_playlist',);
-    const Tags = sequelize.define('wp_hdflvvideoshare_tags',);
 
-    const SQL = {Video,Video2category,Tags,Category};
-    
-    await sequelize.sync();
+    let Video = await sequelize.define('wp_hdflvvideoshare', videoSqlScheme, { freezeTableName: true });
+    let Video2category = await sequelize.define('wp_hdflvvideoshare_med2play', video2categorySqlScheme, { freezeTableName: true });
+    let Category = await sequelize.define('wp_hdflvvideoshare_playlist', categorySqlScheme, { freezeTableName: true });
+    let Tags = await sequelize.define('wp_hdflvvideoshare_tags', tagSqlScheme, { freezeTableName: true });
 
-    const Video = await require('./models/mongo/video')();
-    const Channel = await require('./models/mongo/channel')();
-    const MONGO = {Video,Channel};
+    const SQL = { Video, Video2category, Tags, Category };
+
+    Video = await require('./models/mongo/video')();
+    Channel = await require('./models/mongo/channel')();
+    const MONGO = { Video, Channel };
 
     console.log('Start migrate channels...');
-    await migrateChannel(SQL,MONGO);
-    
+    await migrateChannel(SQL, MONGO);
+
     console.log('Start migrate videos...');
-    await migrateVideo(SQL,MONGO);
-    
+    await migrateVideo(SQL, MONGO);
+
     await sequelize.close();
+    console.log('[SQL] connection closed');
 })();

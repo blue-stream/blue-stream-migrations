@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 const connectionString = require('../../config').mongo.video;
-
-export const VideoStatus = {
-    UPLOADED = 'UPLOADED',
-    PENDING = 'PENDING',
-    FAILED = 'FAILED',
-    READY = 'READY',
-}
+const VideoStatus = require('./videoStatus');
 
 const videoSchema = new mongoose.Schema(
     {

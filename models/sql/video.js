@@ -1,12 +1,16 @@
 const Sequelize = require('sequelize');
 
-export default Video =  {
-    name: {
-        type: Sequelize.STRING,
-        allowNull: false
+export default Video = sequelize.define('wp_hdflvvideoshare', {
+    // attributes
+    vid: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
     },
-    description: {
-        type: Sequelize.STRING,
-        allowNull: false
+    lastName: {
+        type: Sequelize.STRING
+        // allowNull defaults to true
     }
-}
+}, {
+        freezeTableName: true
+    });

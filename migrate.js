@@ -2,9 +2,10 @@ const migrateChannel = require('./scripts/migrate_channels');
 const migrateVideo = require('./scripts/migrate_videos');
 const mongoose = require('mongoose');
 const videoSqlScheme = require('./models/sql/video');
+const config = require('./config')
 
-const MONGO_connectionURI = "mysql://user:pass@example.com:port/dbname";
-const SQL_connectionURI = "mysql://user:pass@example.com:port/dbname";
+const MONGO_connectionURI = config.mongo;
+const SQL_connectionURI = config.sql;
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {

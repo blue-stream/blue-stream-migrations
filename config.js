@@ -4,6 +4,6 @@ module.exports = {
         channel: `mongodb://${process.env.DB_SERVERS || 'localhost:27017'}/${process.env.CHANNELS_DB_NAME || 'blue-stream-channel'}${process.env.DB_REPLICA_NAME ? `?replicaSet=${process.env.DB_REPLICA_NAME}` : ''}`,
     },
     sql: {
-        db: `mysql://user:pass@example.com:port/dbname`
+        db: `mysql://root:aaa@localhost:3306/wordpress`
     }
 }

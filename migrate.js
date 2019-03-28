@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const videoSqlScheme = require('./models/sql/video');
 const config = require('./config')
 
-const MONGO_connectionURI = config.mongo;
 const SQL_connectionURI = config.sql;
 
 const Sequelize = require('sequelize');
@@ -16,12 +15,6 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
 (async () => {
     try {
-        await mongoose.connect(
-            MONGO_connectionURI,
-            { useNewUrlParser: true },
-        );
-    
-        console.log('[MongoDB] connected');
         await sequelize.authenticate();
         console.log('[SQL] connected');
     } catch(err) {
@@ -38,8 +31,8 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     
     await sequelize.sync();
 
-    const Video = require('./models/mongo/video');
-    const Channel = require('./models/mongo/channel');
+    const Video = await require('./models/mongo/video')();
+    const Channel = await require('./models/mongo/channel')();
     const MONGO = {Video,Channel};
 
     console.log('Start migrate channels...');

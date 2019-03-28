@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const connectionString = require('../../config').mongo.channel;
+
 
 const channelSchema = new mongoose.Schema(
     {
@@ -34,4 +36,10 @@ const channelSchema = new mongoose.Schema(
 
 // channelSchema.index({ name: 1, user: -1 });
 
-module.exports = mongoose.model('Channel', channelSchema);
+module.exports = async () => {
+    await mongoose.connect(
+        connectionString,
+        { useNewUrlParser: true },
+    );
+    return mongoose.model('Channel', channelSchema);
+};

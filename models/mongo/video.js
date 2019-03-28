@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const connectionString = require('../../config').mongo.video;
 
 export const VideoStatus = {
     UPLOADED = 'UPLOADED',
@@ -72,4 +73,10 @@ const videoSchema = new mongoose.Schema(
         },
     });
 
-module.exports = mongoose.model('Video', videoSchema);
+module.exports = async () => {
+    await mongoose.connect(
+        connectionString,
+        { useNewUrlParser: true },
+    );
+    return mongoose.model('Video', videoSchema);
+};

@@ -6,10 +6,10 @@ const videoSqlScheme = require('./models/sql/video');
 const tagSqlScheme = require('./models/sql/tag');
 const categorySqlScheme = require('./models/sql/category');
 const video2categorySqlScheme = require('./models/sql/video2category');
+const config = require('./config')
 
-
-const MONGO_connectionURI = "mysql://user:pass@example.com:port/dbname";
-const SQL_connectionURI = "mysql://root:aaa@localhost:3306/wordpress";
+const MONGO_connectionURI = config.mongo;
+const SQL_connectionURI = config.sql;
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {

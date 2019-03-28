@@ -2,8 +2,9 @@
   "name": "blue-stream-migrations",
   "version": "1.0.0",
   "description": "This service handles all DB migrations from old blue-stream to the new version",
-  "main": "index.js",
+  "main": "migrate.js",
   "scripts": {
+    "start": "node ./migrate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

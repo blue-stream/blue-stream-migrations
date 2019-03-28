@@ -8,7 +8,7 @@ const categorySqlScheme = require('./models/sql/category');
 const video2categorySqlScheme = require('./models/sql/video2category');
 const config = require('./config')
 
-const SQL_connectionURI = config.sql;
+const SQL_connectionURI = config.sql.db;
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {
@@ -44,4 +44,5 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     await migrateVideo(SQL, MONGO);
 
     await sequelize.close();
+    console.log('[SQL] connection closed');
 })();

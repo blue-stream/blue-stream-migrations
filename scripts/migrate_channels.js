@@ -1,5 +1,3 @@
-const ChannelModel = require('./models/mongo/channel');
-
-module.exports = async (SQL) => {
+module.exports = async (SQL, MONGO) => {
 
 }

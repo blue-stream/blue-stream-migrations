@@ -36,12 +36,16 @@ const sequelize = new Sequelize(SQL_connectionURI, {
     const SQL = {Video,Video2category,Tags,Category};
     
     sequelize.sync();
-    
+
+    const Video = require('./models/mongo/video');
+    const Channel = require('./models/mongo/channel');
+    const MONGO = {Video,Channel};
+
     console.log('Start migrate channels...');
-    await migrateChannel(SQL);
+    await migrateChannel(SQL,MONGO);
     
     console.log('Start migrate videos...');
-    await migrateVideo(SQL);
+    await migrateVideo(SQL,MONGO);
     
     sequelize.close()
 })();

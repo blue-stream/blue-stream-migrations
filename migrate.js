@@ -19,15 +19,6 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
 (async () => {
     try {
-<<<<<<< HEAD
-        await mongoose.connect(
-            MONGO_connectionURI,
-            { useNewUrlParser: true },
-        );
-        console.log('[MongoDB] connected');
-
-=======
->>>>>>> 8d57eca5fe7fa02df3e05b1e513742cc7ae8c114
         await sequelize.authenticate();
         console.log('[SQL] connected');
     } catch (err) {
@@ -42,15 +33,9 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
     const SQL = { Video, Video2category, Tags, Category };
 
-<<<<<<< HEAD
-    const Video = require('./models/mongo/video');
-    const Channel = require('./models/mongo/channel');
-    const MONGO = { Video, Channel };
-=======
     const Video = await require('./models/mongo/video')();
     const Channel = await require('./models/mongo/channel')();
-    const MONGO = {Video,Channel};
->>>>>>> 8d57eca5fe7fa02df3e05b1e513742cc7ae8c114
+    const MONGO = { Video, Channel };
 
     console.log('Start migrate channels...');
     await migrateChannel(SQL, MONGO);

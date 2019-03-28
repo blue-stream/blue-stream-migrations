@@ -1,28 +1,56 @@
-import videoSqlScheme from './models/sql/video'
-const connectionURI = "mysql://user:pass@example.com:port/dbname";
+const migrateChannel = require('./scripts/migrate_channels');
+const migrateVideo = require('./scripts/migrate_videos');
+const mongoose = require('mongoose');
+
+const videoSqlScheme = require('./models/sql/video');
+const tagSqlScheme = require('./models/sql/tag');
+const categorySqlScheme = require('./models/sql/category');
+const video2categorySqlScheme = require('./models/sql/video2category');
+
+
+const MONGO_connectionURI = "mysql://user:pass@example.com:port/dbname";
+const SQL_connectionURI = "mysql://root:aaa@localhost:3306/wordpress";
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(connectionURI, {
+const sequelize = new Sequelize(SQL_connectionURI, {
     define: {
         timestamps: false,
-
     }
 });
 
-try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-} catch (err) {
-    console.error('Unable to connect to the database:', err);
-}
+(async () => {
+    try {
+        await mongoose.connect(
+            MONGO_connectionURI,
+            { useNewUrlParser: true },
+        );
+        console.log('[MongoDB] connected');
 
-const SQL_video = sequelize.define('wp_hdflvvideoshare', videoSqlScheme)
-const SQL_video2category = sequelize.define('wp_hdflvvideoshare_med2play')
-const SQL_category = sequelize.define('wp_hdflvvideoshare_playlist');
-const SQL_tags = sequelize.define('wp_hdflvvideoshare_tags');
+        await sequelize.authenticate();
+        console.log('[SQL] connected');
+    } catch (err) {
+        console.error('Unable to connect to the database:', err);
+        throw err;
+    }
 
-console.log('Start migrate channels...');
+    const Video = await sequelize.define('wp_hdflvvideoshare', videoSqlScheme, { freezeTableName: true });
+    const Video2category = await sequelize.define('wp_hdflvvideoshare_med2play', video2categorySqlScheme, { freezeTableName: true });
+    const Category = await sequelize.define('wp_hdflvvideoshare_playlist', categorySqlScheme, { freezeTableName: true });
+    const Tags = await sequelize.define('wp_hdflvvideoshare_tags', tagSqlScheme, { freezeTableName: true });
 
-console.log('Start migrate videos...');
+    const SQL = { Video, Video2category, Tags, Category };
 
-sequelize.close()
+    await sequelize.sync();
+
+    const Video = require('./models/mongo/video');
+    const Channel = require('./models/mongo/channel');
+    const MONGO = { Video, Channel };
+
+    console.log('Start migrate channels...');
+    await migrateChannel(SQL, MONGO);
+
+    console.log('Start migrate videos...');
+    await migrateVideo(SQL, MONGO);
+
+    await sequelize.close();
+})();

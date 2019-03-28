@@ -21,4 +21,8 @@ const SQL_video2category = sequelize.define('wp_hdflvvideoshare_med2play')
 const SQL_category = sequelize.define('wp_hdflvvideoshare_playlist');
 const SQL_tags = sequelize.define('wp_hdflvvideoshare_tags');
 
+console.log('Start migrate channels...');
+
+console.log('Start migrate videos...');
+
 sequelize.close()

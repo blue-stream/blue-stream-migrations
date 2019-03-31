@@ -8,6 +8,7 @@ module.exports = async (SQL, MONGO, playlistToChannelMap) => {
     const videosCount = await SQL.Video.count();
     let videos;
     let videosDocs;
+    let category;
 
     for (page = 0; page < (videosCount / limit); page++) {
         videosDocs = [];
@@ -32,9 +33,25 @@ module.exports = async (SQL, MONGO, playlistToChannelMap) => {
             videoDoc.published = true;
             videoDoc.publishDate = video.post_date;
             videoDoc.views = video.hitcount;
-            //videoDoc.tags
-            //videoDoc.channel = playlistToChannelMap
-            videoDoc.classificationSource = sources.find((s) => s.name == video.source).id;
+
+
+
+            categoriesIds = await SQL.Video2category.findAll({
+                where: {
+                    media_id: video.vid
+                },
+                attributes: [playlist_id]
+            });
+            videoDoc.channel = playlistToChannelMap.categoriesIds[0];
+
+            videoDoc.tags = await SQL.Tags.findAll({
+                where: {
+                    media_id: video.vid
+                },
+                attributes: [tags_name]
+            });
+
+            videoDoc.classificationSource = video.source && sources.find((s) => s.name == video.source).id;
 
             if (video.publish_procedure) {
                 videoDoc.pp = video.publish_procedure;
@@ -44,9 +61,8 @@ module.exports = async (SQL, MONGO, playlistToChannelMap) => {
 
             return videoDoc;
         }).filter(video => video);
-        console.log(videos);
 
-        //MONGO.Video.insertMany
+        await MONGO.Video.insertMany(videoDocs);
     }
 
 }

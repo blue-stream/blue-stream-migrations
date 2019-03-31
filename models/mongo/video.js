@@ -67,10 +67,6 @@ const videoSchema = new mongoose.Schema(
         },
     });
 
-module.exports = async () => {
-    await mongoose.connect(
-        connectionString,
-        { useNewUrlParser: true },
-    );
-    return mongoose.model('Video', videoSchema);
+module.exports = (conn) => {
+    return conn.model('Video', videoSchema);
 };

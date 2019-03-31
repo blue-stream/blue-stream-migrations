@@ -1,14 +1,52 @@
 const limit = 50;
+const config = require('../config');
+const log = require('../logger');
+const VideoStatus = require('../models/mongo/videoStatus');
+const sources = require('../sources.json');
 
 module.exports = async (SQL, MONGO, playlistToChannelMap) => {
     const videosCount = await SQL.Video.count();
+    let videos;
+    let videosDocs;
 
     for (page = 0; page < (videosCount / limit); page++) {
-        const videos = await SQL.Video.findAll({ offset: page, limit, raw: true });
-        console.log(JSON.stringify(videos))
+        videosDocs = [];
+        videos = await SQL.Video.findAll({ offset: page, limit, raw: true });
+        videosDocs = videos.map(video => {
+            if (!video.file || video.file.indexOf('.mp4') == -1) {
+                log(`Video with vid ${video.vid} didnt upload. Video's slug: ${video.slug}`)
+                return null;
+            }
+
+            const videoDoc = {};
+
+            videoDoc.title = video.name;
+            videoDoc.description = video.description;
+            videoDoc.owner = config.user;
+            videoDoc.contentPath = video.file;
+            videoDoc.originalPath = video.file;
+
+            videoDoc.thumbnailPath = video.image ? video.image : config.noImagePath;
+            videoDoc.previewPath = video.image ? video.image : config.noImagePath;
+            videoDoc.status = VideoStatus.READY;
+            videoDoc.published = true;
+            videoDoc.publishDate = video.post_date;
+            videoDoc.views = video.hitcount;
+            //videoDoc.tags
+            //videoDoc.channel = playlistToChannelMap
+            videoDoc.classificationSource = sources.find((s) => s.name == video.source).id;
+
+            if (video.publish_procedure) {
+                videoDoc.pp = video.publish_procedure;
+            } else if (video.shos) {
+                videoDoc.pp = video.shos;
+            }
+
+            return videoDoc;
+        }).filter(video => video);
+        console.log(videos);
+
+        //MONGO.Video.insertMany
     }
 
-    console.log(JSON.stringify(await SQL.Video2category.findAll({ raw: true })));
-    console.log(JSON.stringify(await SQL.Tags.findAll({ raw: true })));
-    console.log(JSON.stringify(await SQL.Category.findAll({ raw: true })));
 }

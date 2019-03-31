@@ -5,5 +5,10 @@ module.exports = {
     },
     sql: {
         db: `mysql://root:aaa@localhost:3306/wordpress`
-    }
+    },
+    user: 'amantube@admin',
+    log: {
+        path: 'log.txt'
+    },
+    noImagePath: process.env.NO_IMAGE_PATH || 'no_image.png',
 }

@@ -1,6 +1,7 @@
 const migrateChannel = require('./scripts/migrate_channels');
 const migrateVideo = require('./scripts/migrate_videos');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const videoSqlScheme = require('./models/sql/video');
 const tagSqlScheme = require('./models/sql/tag');
@@ -26,6 +27,14 @@ const sequelize = new Sequelize(SQL_connectionURI, {
         throw err;
     }
 
+    try {
+        fs.unlinkSync(config.log.path);
+    } catch (e) {
+        console.log('Create log file');
+    }
+
+    console.log('[logger] initiated')
+
     let Video = await sequelize.define('wp_hdflvvideoshare', videoSqlScheme, { freezeTableName: true });
     let Video2category = await sequelize.define('wp_hdflvvideoshare_med2play', video2categorySqlScheme, { freezeTableName: true });
     let Category = await sequelize.define('wp_hdflvvideoshare_playlist', categorySqlScheme, { freezeTableName: true });
@@ -33,8 +42,17 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
     const SQL = { Video, Video2category, Tags, Category };
 
-    Video = await require('./models/mongo/video')();
-    Channel = await require('./models/mongo/channel')();
+    //Mongo connections
+    const channelConn = await mongoose.createConnection(
+        config.mongo.channel,
+        { useNewUrlParser: true },
+    );
+    const videoConn = await mongoose.createConnection(
+        config.mongo.video,
+        { useNewUrlParser: true },
+    );
+    Video = require('./models/mongo/video')(videoConn);
+    Channel = require('./models/mongo/channel')(channelConn);
     const MONGO = { Video, Channel };
 
     console.log('Start migrate channels...');

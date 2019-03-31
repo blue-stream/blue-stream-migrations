@@ -3,6 +3,8 @@ const config = require('../config');
 const log = require('../logger');
 const VideoStatus = require('../models/mongo/videoStatus');
 const sources = require('../sources.json');
+const categoryParent = require('./categoryParent');
+const categoryTag = require('./categoryTag');
 
 module.exports = async (SQL, MONGO, playlistToChannelMap) => {
     const videosCount = await SQL.Video.count();
@@ -36,20 +38,30 @@ module.exports = async (SQL, MONGO, playlistToChannelMap) => {
 
 
 
-            categoriesIds = await SQL.Video2category.findAll({
+            categoryIds = await SQL.Video2category.findAll({
                 where: {
                     media_id: video.vid
                 },
                 attributes: [playlist_id]
             });
-            videoDoc.channel = playlistToChannelMap.categoriesIds[0];
 
-            videoDoc.tags = await SQL.Tags.findAll({
+            const parentId = await categoryParent(categoryIds[0]);
+            if (!playlistToChannelMap[parentId]) {
+                log(`Video with vid ${video.vid} didnt upload. Video's slug: ${video.slug}`)
+                return null;
+            }
+
+            videoDoc.channel = playlistToChannelMap[parentId];
+
+            const categoryTags = await Promise.all(categoryIds.map(id => categoryTag(id)));
+            const tags = await SQL.Tags.findAll({
                 where: {
                     media_id: video.vid
                 },
                 attributes: [tags_name]
             });
+            tags.push(categoryTags);
+            videoDoc.tags = tags;
 
             videoDoc.classificationSource = video.source && sources.find((s) => s.name == video.source).id;
 

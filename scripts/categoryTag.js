@@ -1,8 +1,9 @@
 const config = require('../config');
 const log = require('../logger');
+let playlists;
 
 module.exports = async (SQL, playlistId) => {
-    const playlists = await SQL.Category.findAll({ raw: true });
+    if (!playlists) playlists = await SQL.Category.findAll({ raw: true });
 
     const currentPlaylist = playlists.find(p => p.pid == playlistId);
     if (!currentPlaylist) return null;

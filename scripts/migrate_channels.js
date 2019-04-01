@@ -8,18 +8,18 @@ module.exports = async (SQL, MONGO) => {
 
     //Mongo
 
-    parentPlaylists.forEach(parentPlaylist => {
+    await Promise.all(parentPlaylists.map(async (parentPlaylist) => {
         channel = await MONGO.Channel.findOne({ name: parentPlaylist.playlist_name });
 
         if (!channel) {
-            channel = MONGO.Channel.create({ name: channelName, user: config.user })
-            log(`${channelName} channel created`);
+            channel = await MONGO.Channel.create({ name: parentPlaylist.playlist_name, user: config.user })
+            log(`${parentPlaylist.playlist_name} channel created`);
         } else {
-            log(`${channelName} channel already exists`);
+            log(`${parentPlaylist.playlist_name} channel already exists`);
         }
 
         playlistToChannelMap[parentPlaylist.pid] = channel.id;
-    });
+    }));
 
     return playlistToChannelMap;
 }

@@ -10,5 +10,6 @@ module.exports = {
     log: {
         path: 'log.txt'
     },
+    lastExecutionFile: 'last_execution.json',
     noImagePath: process.env.NO_IMAGE_PATH || 'no_image.png',
 }

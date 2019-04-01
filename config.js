@@ -4,9 +4,9 @@ module.exports = {
         channel: `mongodb://${process.env.DB_SERVERS || 'localhost:27018'}/${process.env.CHANNELS_DB_NAME || 'blue-stream-channel'}${process.env.DB_REPLICA_NAME ? `?replicaSet=${process.env.DB_REPLICA_NAME}` : ''}`,
     },
     sql: {
-        db: `mysql://root:aaa@localhost:3306/wordpress`
+        db: process.env.SQL_SERVER || `mysql://root:aaa@localhost:3306/wordpress`
     },
-    user: 'amantube@admin',
+    user: process.env.ADMIN_USER || 'amantube@admin',
     log: {
         path: 'log.txt'
     },

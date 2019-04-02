@@ -40,6 +40,12 @@ const videoSchema = new mongoose.Schema(
         publishDate: {
             type: Date,
         },
+        createdAt: {
+            type: Date,
+        },
+        updatedAt: {
+            type: Date,
+        },
         views: {
             type: Number,
             default: 0,
@@ -57,7 +63,7 @@ const videoSchema = new mongoose.Schema(
     },
     {
         autoIndex: false,
-        timestamps: true,
+        // timestamps: false,
         id: true,
         toJSON: {
             virtuals: true,

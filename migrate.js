@@ -11,12 +11,18 @@ const config = require('./config')
 
 const SQL_connectionURI = config.sql.db;
 
+Date.prototype.addHours = function (h) {
+    this.setHours(this.getHours() + h);
+    return this;
+}
+
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(SQL_connectionURI, {
     define: {
         timestamps: false,
     }
 });
+
 
 (async () => {
     try {
@@ -60,7 +66,9 @@ const sequelize = new Sequelize(SQL_connectionURI, {
 
     console.log('Start migrate videos...');
     await migrateVideo(SQL, MONGO, playlistToChannelMap);
+    fs.writeFileSync(config.lastExecutionFile, JSON.stringify({ date: new Date().addHours(3) }))
 
     await sequelize.close();
     console.log('[SQL] connection closed');
+    process.exit(0);
 })();

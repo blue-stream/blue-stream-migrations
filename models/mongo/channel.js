@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const connectionString = require('../../config').mongo.channel;
-console.log(connectionString);
 
 const channelSchema = new mongoose.Schema(
     {

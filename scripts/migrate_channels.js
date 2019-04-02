@@ -7,7 +7,8 @@ module.exports = async (SQL, MONGO) => {
     const parentPlaylists = await SQL.Category.findAll({ raw: true, where: { parent_id: 0 } });
 
     //Mongo
-
+    log('CHANNEL CREATION');
+    log('================');
     await Promise.all(parentPlaylists.map(async (parentPlaylist) => {
         channel = await MONGO.Channel.findOne({ name: parentPlaylist.playlist_name });
 

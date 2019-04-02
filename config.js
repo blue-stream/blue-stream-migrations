@@ -12,4 +12,6 @@ module.exports = {
     },
     lastExecutionFile: 'last_execution.json',
     noImagePath: process.env.NO_IMAGE_PATH || 'no_image.png',
+    defaultVideoTags: ['אמן טיוב ישן', 'ארכיון אמנטיוב ישן', 'amantube v1'],
+    videoCountPerPage: 500,
 }
